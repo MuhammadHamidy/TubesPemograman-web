@@ -5,6 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\ProfileController;
+
 Route::get('/', function () {
     return view('landingPage');
 })->name('landingPage');
@@ -20,12 +22,12 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::get('/games/{level}', [GameController::class, 'show'])->name('games.show');
 Route::post('/games/check-answer', [GameController::class, 'checkAnswer'])->name('games.checkAnswer');
-Route::get('/profile', [GameController::class, 'index'])->name('profile');
+Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
 // Tahap Perbaikan
-// Route::get('/manage', [QuestionController::class, 'index'])->name('parent.manage');
-// Route::get('/create', [QuestionController::class, 'create'])->name('parent.create');
-// Route::post('/store', [QuestionController::class, 'store'])->name('parent.store');
-// Route::get('/edit/{id}', [QuestionController::class, 'edit'])->name('parent.edit');
-// Route::put('/update/{id}', [QuestionController::class, 'update'])->name('parent.update');
-// Route::delete('/destroy/{id}', [QuestionController::class, 'destroy'])->name('parent.destroy');
+Route::get('/manage', [QuestionController::class, 'index'])->name('parent.manage');
+Route::get('/create', [QuestionController::class, 'create'])->name('parent.create');
+Route::post('/store', [QuestionController::class, 'store'])->name('parent.store');
+Route::get('/edit/{id}', [QuestionController::class, 'edit'])->name('parent.edit');
+Route::put('/update/{id}', [QuestionController::class, 'update'])->name('parent.update');
+Route::delete('/destroy/{id}', [QuestionController::class, 'destroy'])->name('parent.destroy');

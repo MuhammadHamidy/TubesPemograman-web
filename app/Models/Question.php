@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 class Question extends Model
 {
-    // use HasFactory;
+    use HasFactory;
 
-    // protected $fillable = ['level', 'question', 'question_desc', 'image'];
-
-    // public function options()
-    // {
-    //     return $this->hasMany(Option::class);
-    // }
+    protected $fillable = [
+        'level',
+        'question',
+        'question_desc',
+        'image',
+    ];
 }
-
-//tahap perbaikan

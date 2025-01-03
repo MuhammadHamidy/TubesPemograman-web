@@ -2,82 +2,74 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Question;
-use App\Models\Option;
 use Illuminate\Http\Request;
+use App\Models\Question;
 
 class QuestionController extends Controller
 {
-    // public function index()
-    // {
-    //     $questions = Question::all(); // Mengambil semua soal dari database
-    //     return view('parent.manage', compact('questions'));
-    // }
+    public function index()
+    {
+        $questions = Question::all();
+        return view('parent.index', compact('questions'));
+    }
 
-    // // Menampilkan form untuk membuat soal baru
-    // public function create()
-    // {
-    //     return view('parent.create');
-    // }
+    public function create()
+    {
+        return view('parent.create');
+    }
 
-    // // Menyimpan soal yang baru dibuat
-    // public function store(Request $request)
-    // {
-    //     $data = $request->validate([
-    //         'level' => 'required|string',
-    //         'question' => 'required|string',
-    //         'question_desc' => 'nullable|string',
-    //         'image' => 'nullable|image|max:1024', // Validasi gambar jika ada
-    //     ]);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'level' => 'required|string|max:255',
+            'question' => 'required|string',
+            'question_desc' => 'nullable|string',
+            'image' => 'nullable|image',
+        ]);
 
-    //     // Menyimpan gambar jika ada
-    //     if ($request->hasFile('image')) {
-    //         $data['image'] = $request->file('image')->store('questions'); // Menyimpan gambar
-    //     }
+        $data = $request->only(['level', 'question', 'question_desc']);
+        
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('questions', 'public');
+        }
 
-    //     $question = Question::create($data);
+        Question::create($data);
 
-    //     return redirect()->route('parent.manage')->with('success', 'Soal berhasil ditambahkan!');
-    // }
+        return redirect()->route('parent.manage')->with('success', 'Question created successfully.');
+    }
 
-    // // Menampilkan form untuk mengedit soal
-    // public function edit($id)
-    // {
-    //     $question = Question::findOrFail($id);
-    //     return view('parent.edit', compact('question'));
-    // }
+    public function edit($id)
+    {
+        $question = Question::findOrFail($id);
+        return view('parent.edit', compact('question'));
+    }
 
-    // // Mengupdate soal yang diedit
-    // public function update(Request $request, $id)
-    // {
-    //     $data = $request->validate([
-    //         'level' => 'required|string',
-    //         'question' => 'required|string',
-    //         'question_desc' => 'nullable|string',
-    //         'image' => 'nullable|image|max:1024', // Validasi gambar jika ada
-    //     ]);
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'level' => 'required|string|max:255',
+            'question' => 'required|string',
+            'question_desc' => 'nullable|string',
+            'image' => 'nullable|image',
+        ]);
 
-    //     $question = Question::findOrFail($id);
+        $question = Question::findOrFail($id);
+        $data = $request->only(['level', 'question', 'question_desc']);
+        
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('questions', 'public');
+        }
 
-    //     // Menyimpan gambar jika ada
-    //     if ($request->hasFile('image')) {
-    //         $data['image'] = $request->file('image')->store('questions');
-    //     }
+        $question->update($data);
 
-    //     $question->update($data);
+        return redirect()->route('parent.manage')->with('success', 'Question updated successfully.');
+    }
 
-    //     return redirect()->route('parent.manage')->with('success', 'Soal berhasil diupdate!');
-    // }
+    public function destroy($id)
+    {
+        $question = Question::findOrFail($id);
+        $question->delete();
 
-    // // Menghapus soal
-    // public function destroy($id)
-    // {
-    //     $question = Question::findOrFail($id);
-    //     $question->options()->delete(); // Menghapus opsi yang terkait
-    //     $question->delete(); // Menghapus soal
-    //     return redirect()->route('parent.manage')->with('success', 'Soal berhasil dihapus!');
-    // }
+        return redirect()->route('parent.manage')->with('success', 'Question deleted successfully.');
+    }
 }
-
-
-// Tahap Perbaikan

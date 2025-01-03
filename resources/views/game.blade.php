@@ -1,5 +1,5 @@
 <x-layout_landingPage>
-    {{-- <div class="max-w-2xl mx-auto">
+    <div class="max-w-2xl mx-auto">
         <div class="mb-6">
             <div class="relative w-full h-4 bg-gray-200 rounded-full">
                 <div id="timer-bar" class="absolute top-0 left-0 h-full bg-blue-500 rounded-full"></div>
@@ -94,7 +94,7 @@
         // In production, this would load the next question
         location.reload();
     }
-    </script> --}}
+    </script>
 </x-layout_landingPage>
 
 {{-- Tahap Perbaikan --}}
