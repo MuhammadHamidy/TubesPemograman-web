@@ -14,5 +14,11 @@ class Question extends Model
         'question',
         'question_desc',
         'image',
+        'correct_answer'
     ];
+
+    public function options()
+    {
+        return $this->hasMany(QuestionOption::class);
+    }
 }
