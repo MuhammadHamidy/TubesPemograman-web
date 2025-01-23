@@ -17,7 +17,7 @@
             <img src="{{ asset('img/matahari.png') }}" alt="Sun" class="absolute w-20 opacity-100 top-100 right-0">
         </div>
 
-        <nav class="w-full bg-blue-500 p-4">
+        {{-- <nav class="w-full bg-blue-500 p-4">
             <div class="container mx-auto flex justify-between">
                 <a href="{{ route('home') }}" class="text-white font-bold">KiQualls</a>
                 <div>
@@ -27,7 +27,7 @@
                     <a href="{{ route('parent.manage') }}" class="text-white">Manage Questions</a>
                 </div>
             </div>
-        </nav>
+        </nav> --}}
 
        {{$slot}}
     </div>
