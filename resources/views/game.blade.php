@@ -60,7 +60,8 @@
                 },
                 body: JSON.stringify({
                     level: '{{ $level }}',
-                    answer: answer
+                    answer: answer,
+                    question_id: {{ $question['id'] }}
                 })
             })
             .then(response => response.json())

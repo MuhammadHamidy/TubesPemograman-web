@@ -70,9 +70,9 @@ class GameController extends Controller
         return view('home_game', compact('games'));
     }
 
-    private function validateAnswer($level, $answer)
+    private function validateAnswer($level, $answer, $questionId)
     {
-        $question = Question::where('level', $level)->first();
+        $question = Question::where('id', $questionId)->where('level', $level)->first();
         return $question && $question->correct_answer === $answer;
     }
 
@@ -97,6 +97,7 @@ class GameController extends Controller
         }
 
         $questionData = [
+            'id' => $question->id,
             'image' => $question->image,
             'question' => $question->question,
             'questionDesc' => $question->question_desc,
@@ -115,7 +116,7 @@ class GameController extends Controller
     public function checkAnswer(Request $request)
     {
         $user = Auth::user();
-        $isCorrect = $this->validateAnswer($request->level, $request->answer);
+        $isCorrect = $this->validateAnswer($request->level, $request->answer, $request->question_id);
         
         if ($isCorrect) {
             $points = 100;
