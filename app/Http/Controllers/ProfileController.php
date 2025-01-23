@@ -138,6 +138,6 @@ class ProfileController extends Controller
             'mother_name' => $request->mother_name,
         ]);
 
-        return redirect()->route('profile.index')->with('success', 'Profile updated successfully');
+        return redirect()->route('profile')->with('success', 'Profile updated successfully');
     }
 }

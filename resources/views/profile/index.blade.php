@@ -189,7 +189,7 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            window.location.reload();
+                            window.location.href = "{{ route('profile') }}";
                         } else {
                             return response.json().then(data => {
                                 throw new Error(data.message || 'Terjadi kesalahan');
