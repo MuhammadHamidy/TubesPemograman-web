@@ -64,6 +64,7 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
 # TubesPemograman-web
 
 ## Setup Instructions
@@ -113,3 +114,29 @@ php artisan serve
 - Points system
 - Admin panel for managing questions
 - Support for both text and image-based questions
+
+# Project Setup
+
+## Database Seeding with Images
+
+The project includes a database seeder that automatically handles question data and associated images. To properly set up and run the seeder:
+
+1. Ensure all question images are placed in the `database/seeders/images/` directory
+2. Run the database migrations:
+   ```bash
+   php artisan migrate
+   ```
+3. Run the database seeder:
+   ```bash
+   php artisan db:seed
+   ```
+
+The seeder will automatically:
+- Copy all required images from `database/seeders/images/` to the public assets directory
+- Create question records in the database
+- Handle any missing images gracefully with proper logging
+
+### Image Requirements
+- All images should be placed in `database/seeders/images/` directory
+- Supported image names are defined in the QuestionSeeder
+- Images will be automatically copied to `public/asset/` when seeding
