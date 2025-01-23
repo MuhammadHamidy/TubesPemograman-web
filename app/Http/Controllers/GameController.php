@@ -20,6 +20,14 @@ class GameController extends Controller
         $user = Auth::user();
         $userPoints = $user->points ?? 0;
         
+        // Get question counts for each level
+        $questionCounts = [
+            'motorik-1' => Question::where('level', 'motorik-1')->count(),
+            'motorik-2' => Question::where('level', 'motorik-2')->count(),
+            'motorik-3' => Question::where('level', 'motorik-3')->count(),
+            'motorik-4' => Question::where('level', 'motorik-4')->count(),
+        ];
+        
         $games = [
             [
                 'id' => 'motorik-1',
@@ -27,7 +35,8 @@ class GameController extends Controller
                 'subtitle' => 'Tebak Warna',
                 'icon' => 'Motorik1.png',
                 'required_points' => $this->pointsRequirements['motorik-1'],
-                'is_unlocked' => true
+                'is_unlocked' => true,
+                'question_count' => $questionCounts['motorik-1']
             ],
             [
                 'id' => 'motorik-2',
@@ -35,7 +44,8 @@ class GameController extends Controller
                 'subtitle' => 'Berhitung',
                 'icon' => 'Motorik2.png',
                 'required_points' => $this->pointsRequirements['motorik-2'],
-                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-2']
+                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-2'],
+                'question_count' => $questionCounts['motorik-2']
             ],
             [
                 'id' => 'motorik-3',
@@ -43,7 +53,8 @@ class GameController extends Controller
                 'subtitle' => 'Membaca',
                 'icon' => 'Motorik3.png',
                 'required_points' => $this->pointsRequirements['motorik-3'],
-                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-3']
+                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-3'],
+                'question_count' => $questionCounts['motorik-3']
             ],
             [
                 'id' => 'motorik-4',
@@ -51,7 +62,8 @@ class GameController extends Controller
                 'subtitle' => 'Tebak Bentuk',
                 'icon' => 'Motorik4.png',
                 'required_points' => $this->pointsRequirements['motorik-4'],
-                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-4']
+                'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-4'],
+                'question_count' => $questionCounts['motorik-4']
             ],
         ];
         

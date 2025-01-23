@@ -16,6 +16,7 @@
                     <div class="ml-4">
                         <h2 class="text-xl font-bold">{{ $game['title'] }}</h2>
                         <p class="text-gray-600">{{ $game['subtitle'] }}</p>
+                        <p class="text-sm text-gray-500">{{ $game['question_count'] }} Soal</p>
                         @if(isset($game['is_unlocked']) && !$game['is_unlocked'])
                             <p class="text-red-500 mt-2">
                                 🔒 Perlu {{ $game['required_points'] }} poin
