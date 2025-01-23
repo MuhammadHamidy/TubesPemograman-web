@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ParentAuthController;
 
 Route::get('/', function () {
     return view('landingPage');
@@ -58,3 +59,7 @@ Route::prefix('admin')->group(function () {
     Route::put('/questions/{question}', [App\Http\Controllers\AdminController::class, 'updateQuestion'])->name('admin.questions.update');
     Route::delete('/questions/{question}', [App\Http\Controllers\AdminController::class, 'destroyQuestion'])->name('admin.questions.destroy');
 });
+
+// Parent Authentication Routes
+Route::get('/parent/login', [ParentAuthController::class, 'showParentLogin'])->name('parent.login.show');
+Route::post('/parent/login', [ParentAuthController::class, 'parentLogin'])->name('parent.login');

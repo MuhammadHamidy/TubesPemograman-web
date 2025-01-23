@@ -24,6 +24,10 @@ class User extends Authenticatable
         'password',
         'role',
         'points',
+        'parent_email',
+        'parent_password',
+        'is_parent',
+        'parent_of'
     ];
 
     /**
@@ -47,5 +51,15 @@ class User extends Authenticatable
             'password' => 'hashed',
             'age' => 'integer'
         ];
+    }
+
+    public function child()
+    {
+        return $this->belongsTo(User::class, 'parent_of');
+    }
+
+    public function parent()
+    {
+        return $this->hasOne(User::class, 'parent_of');
     }
 }
