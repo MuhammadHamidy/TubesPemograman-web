@@ -1,3 +1,56 @@
+# TubesPemograman-web
+
+## Setup Instructions
+
+1. Clone the repository
+2. Install dependencies:
+```bash
+composer install
+npm install
+```
+
+3. Copy `.env.example` to `.env` and configure your database settings
+
+4. Generate application key:
+```bash
+php artisan key:generate
+```
+
+5. Create storage symbolic link:
+```bash
+php artisan storage:link
+```
+
+6. Set up the database:
+```bash
+php artisan migrate
+php artisan db:seed    # This will seed sample questions and copy required images
+```
+
+Note: The seeder will automatically:
+- Copy question images from `database/seeders/images/` to the public assets directory
+- Create question records in the database
+- Handle any missing images gracefully
+
+7. Start the development server:
+```bash
+php artisan serve
+```
+
+## Admin Access
+- URL: `your-domain.com/admin`
+- Username: `admin`
+- Password: `admin123`
+
+## Features
+- User registration and authentication
+- Educational games with different levels
+- Points system
+- Admin panel for managing questions
+- Support for both text and image-based questions
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
@@ -64,56 +117,6 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-# TubesPemograman-web
-
-## Setup Instructions
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-composer install
-npm install
-```
-
-3. Copy `.env.example` to `.env` and configure your database settings
-
-4. Run migrations:
-```bash
-php artisan migrate
-```
-
-5. (Optional) Seed the database with sample questions:
-```bash
-php artisan db:seed
-```
-
-6. Create storage symbolic link:
-```bash
-php artisan storage:link
-```
-
-7. Generate application key:
-```bash
-php artisan key:generate
-```
-
-8. Start the development server:
-```bash
-php artisan serve
-```
-
-## Admin Access
-- URL: `your-domain.com/admin`
-- Username: `admin`
-- Password: `admin123`
-
-## Features
-- User registration and authentication
-- Educational games with different levels
-- Points system
-- Admin panel for managing questions
-- Support for both text and image-based questions
 
 # Project Setup
 
