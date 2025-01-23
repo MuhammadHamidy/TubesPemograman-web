@@ -6,33 +6,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\VideoController;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ParentController;
 
-Route::middleware(['auth'])->group(function () {
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::post('/profile/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.update-photo');
-    
-    // Landing page route yang membutuhkan auth
-    Route::get('/landing', function () {
-        $user = Auth::user();
-        return view('landingPage', compact('user'));
-    })->name('landing');
-});
-
-// Public routes
 Route::get('/', function () {
-    if (Auth::check()) {
-        $user = Auth::user();
-        return view('landingPage', compact('user'));
-    }
     return view('landingPage');
 })->name('landingPage');
-
 
 route::get('/signin', [AuthController::class, "signin"])->name('signin');
 route::post('/signin', [AuthController::class, "signinPost"])->name('signin.post');
@@ -56,48 +33,23 @@ Route::get('/edit/{id}', [QuestionController::class, 'edit'])->name('parent.edit
 Route::put('/update/{id}', [QuestionController::class, 'update'])->name('parent.update');
 Route::delete('/destroy/{id}', [QuestionController::class, 'destroy'])->name('parent.destroy');
 
-// Authentication Routes
-Route::get('/login', function () {
-    return view('auth.signin');
-})->name('login');
-Route::post('/login', [AuthController::class, 'signinPost'])->name('auth.signin');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 // Admin Routes
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-    
-    // Tutorial Video Management
-    Route::get('/admin/tutorial-video', [AdminController::class, 'tutorialVideo'])->name('admin.tutorial.video');
-    Route::post('/admin/tutorial-video', [AdminController::class, 'storeTutorialVideo'])->name('admin.tutorial.store');
-    Route::put('/admin/tutorial-video/{id}', [AdminController::class, 'updateTutorialVideo'])->name('admin.tutorial.update');
-    Route::delete('/admin/tutorial-video/{id}', [AdminController::class, 'deleteTutorialVideo'])->name('admin.tutorial.delete');
-    Route::post('/admin/tutorial-video/{id}/activate', [AdminController::class, 'activateTutorialVideo'])->name('admin.tutorial.activate');
-});
-
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminController::class, 'showLogin'])->name('admin.login');
-    Route::post('/login', [AdminController::class, 'login'])->name('admin.login.submit');
-    Route::post('/logout', [AdminController::class, 'logout'])->name('admin.logout');
-    
-    Route::middleware(['admin'])->group(function () {
-        // ... existing admin routes ...
-    });
-});
+    Route::get('/', [App\Http\Controllers\AdminController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [App\Http\Controllers\AdminController::class, 'login'])->name('admin.login.post');
+    Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::post('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('admin.logout');
 
-// Parent routes
-Route::middleware(['auth', 'role:parent'])->group(function () {
-    Route::get('/parent/manage', [ParentController::class, 'manage'])->name('parent.manage');
-    Route::get('/parent/child/{id}/progress', [ParentController::class, 'viewChildProgress'])->name('parent.child-progress');
-    Route::post('/parent/link-child', [ParentController::class, 'linkChild'])->name('parent.link-child');
-});
+    // Tutorial Video Management
+    Route::get('/tutorial-video', [App\Http\Controllers\AdminController::class, 'manageTutorialVideo'])->name('admin.tutorial-video');
+    Route::post('/tutorial-video', [App\Http\Controllers\AdminController::class, 'uploadTutorialVideo'])->name('admin.tutorial-video.upload');
+    Route::put('/tutorial-video/{id}/toggle', [App\Http\Controllers\AdminController::class, 'toggleTutorialVideo'])->name('admin.tutorial-video.toggle');
+    Route::delete('/tutorial-video/{id}', [App\Http\Controllers\AdminController::class, 'deleteTutorialVideo'])->name('admin.tutorial-video.delete');
 
-// Parent authentication routes
-Route::get('/parent/signin', [ParentController::class, 'showSignin'])->name('parent.signin');
-Route::post('/parent/signin', [ParentController::class, 'signin'])->name('parent.signin.post');
-
-// Parent protected routes
-Route::middleware(['auth', 'role:parent'])->group(function () {
-    Route::get('/parent/manage', [ParentController::class, 'manage'])->name('parent.manage');
-    Route::get('/parent/child/{id}/progress', [ParentController::class, 'viewChildProgress'])->name('parent.child-progress');
+    // Questions Management Routes
+    Route::get('/questions/create', [App\Http\Controllers\AdminController::class, 'createQuestion'])->name('admin.questions.create');
+    Route::post('/questions', [App\Http\Controllers\AdminController::class, 'storeQuestion'])->name('admin.questions.store');
+    Route::get('/questions/{question}/edit', [App\Http\Controllers\AdminController::class, 'editQuestion'])->name('admin.questions.edit');
+    Route::put('/questions/{question}', [App\Http\Controllers\AdminController::class, 'updateQuestion'])->name('admin.questions.update');
+    Route::delete('/questions/{question}', [App\Http\Controllers\AdminController::class, 'destroyQuestion'])->name('admin.questions.destroy');
 });

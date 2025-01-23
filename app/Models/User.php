@@ -24,7 +24,6 @@ class User extends Authenticatable
         'password',
         'role',
         'points',
-        'profile_picture'
     ];
 
     /**
@@ -48,25 +47,5 @@ class User extends Authenticatable
             'password' => 'hashed',
             'age' => 'integer'
         ];
-    }
-
-    public function parentRelationships()
-    {
-        return $this->hasMany(ParentChildRelationship::class, 'child_id');
-    }
-
-    public function childRelationships()
-    {
-        return $this->hasMany(ParentChildRelationship::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->belongsToMany(User::class, 'parent_child_relationships', 'parent_id', 'child_id');
-    }
-
-    public function parents()
-    {
-        return $this->belongsToMany(User::class, 'parent_child_relationships', 'child_id', 'parent_id');
     }
 }
