@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('mother_name')->unique();
             $table->integer('age');
             $table->string('password');
+            $table->string('profile_photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
