@@ -30,6 +30,10 @@
                     <a href="{{ route('home') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Utama</a>
                     <a href="{{ route('games.index') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Permainan</a>
                     <a href="{{ route('profile') }}" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">Profile</a>
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition">Logout</button>
+                    </form>
                 </div>
             </div>
         </nav>

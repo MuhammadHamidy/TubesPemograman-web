@@ -15,6 +15,7 @@ route::get('/signin', [AuthController::class, "signin"])->name('signin');
 route::post('/signin', [AuthController::class, "signinPost"])->name('signin.post');
 route::get('/signup', [AuthController::class, "signup"])->name('signup');
 route::post('/signup', [AuthController::class, "signupPost"])->name('signup.post');
+route::post('/logout', [AuthController::class, "logout"])->name('logout');
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
 
