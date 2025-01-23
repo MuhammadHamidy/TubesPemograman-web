@@ -47,12 +47,12 @@
                 <div class="absolute bottom-4 right-4">
                     @if(!isset($game['is_unlocked']) || $game['is_unlocked'])
                         <a href="{{ route('games.show', $game['id']) }}" 
-                           class="px-4 py-2 bg-blue-500 text-white rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                           class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                             Mulai Bermain
                         </a>
                     @else
                         <button onclick="showPointsWarning({{ $game['required_points'] }})"
-                                class="px-4 py-2 bg-blue-500 text-white rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
                             Mulai Bermain
                         </button>
                     @endif
