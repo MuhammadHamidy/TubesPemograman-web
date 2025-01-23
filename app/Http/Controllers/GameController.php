@@ -89,8 +89,12 @@ class GameController extends Controller
         // Check if we're starting a new level (no answered questions or different level)
         $currentLevel = session()->get('current_level');
         if ($currentLevel !== $level) {
-            session()->forget('answered_questions');
-            session()->put('current_level', $level);
+            session()->forget(['answered_questions', 'correct_answers', 'initial_points']);
+            session()->put([
+                'current_level' => $level,
+                'initial_points' => $userPoints,
+                'correct_answers' => 0
+            ]);
         }
 
         // Get answered questions from session
@@ -103,10 +107,23 @@ class GameController extends Controller
             ->first();
 
         if (!$question) {
-            // Reset answered questions and current level when level is completed
-            session()->forget(['answered_questions', 'current_level']);
-            return redirect()->route('games.index')
-                ->with('success', 'Selamat! Kamu telah menyelesaikan semua pertanyaan di level ini!');
+            $totalQuestions = Question::where('level', $level)->count();
+            $correctAnswers = session()->get('correct_answers', 0);
+            $initialPoints = session()->get('initial_points', $userPoints);
+            $finalPoints = $user->points;
+            $pointsChange = $finalPoints - $initialPoints;
+
+            // Reset session data
+            session()->forget(['answered_questions', 'current_level', 'correct_answers', 'initial_points']);
+
+            return view('game_result', [
+                'level' => $level,
+                'correctAnswers' => $correctAnswers,
+                'totalQuestions' => $totalQuestions,
+                'initialPoints' => $initialPoints,
+                'finalPoints' => $finalPoints,
+                'pointsChange' => $pointsChange
+            ]);
         }
 
         $questionData = [
@@ -152,6 +169,10 @@ class GameController extends Controller
         if ($isCorrect) {
             $points = 100;
             $user->increment('points', $points);
+            // Increment correct answers counter
+            $correctAnswers = session()->get('correct_answers', 0);
+            session()->put('correct_answers', $correctAnswers + 1);
+            
             return response()->json([
                 'status' => 'success',
                 'message' => 'Selamat jawaban Kamu benar..',
@@ -167,7 +188,7 @@ class GameController extends Controller
         return response()->json([
             'status' => 'error',
             'message' => 'Sayang Sekali jawaban Kamu Salah..',
-            'points' => $newPoints - $user->points,
+            'points' => $points,
             'hasNext' => $remainingQuestions
         ]);
     }

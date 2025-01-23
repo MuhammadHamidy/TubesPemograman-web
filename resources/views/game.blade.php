@@ -88,14 +88,20 @@
                         <img src="${isCorrect ? '/asset/CheckBox.png' : '/asset/FalseBox.png'}" class="w-16 h-16 mx-auto">
                     </div>
                     <h3 class="text-xl font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${message}</h3>
-                    <p class="mt-2">Poin: ${points > 0 ? '+' : ''}${points}</p>
-                    <div class="mt-6 flex justify-center space-x-4">
-                        <a href="{{ route('games.index') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Kembali</a>
-                        ${hasNext ? `<button onclick="nextQuestion()" class="px-4 py-2 bg-blue-500 text-white rounded">Selanjutnya</button>` : ''}
+                    <p class="mt-2">Poin: ${points >= 0 ? '+' + points : points}</p>
+                    <div class="mt-6 flex justify-center">
+                        ${hasNext ? 
+                            `<button onclick="nextQuestion()" class="px-4 py-2 bg-blue-500 text-white rounded">Selanjutnya</button>` : 
+                            `<button onclick="showResults()" class="px-4 py-2 bg-blue-500 text-white rounded">Lihat Hasil</button>`
+                        }
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
+        }
+        
+        function showResults() {
+            window.location.href = '{{ route('games.show', ['level' => $level]) }}';
         }
         
         function nextQuestion() {
