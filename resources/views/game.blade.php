@@ -1,6 +1,10 @@
 <x-layout_landingPage>
     <div class="max-w-2xl mx-auto">
         <div class="mb-6">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm text-gray-600">Waktu</span>
+                <span class="text-sm text-gray-600">Pertanyaan {{ $currentQuestion }} dari {{ $totalQuestions }}</span>
+            </div>
             <div class="relative w-full h-4 bg-gray-200 rounded-full">
                 <div id="timer-bar" class="absolute top-0 left-0 h-full bg-blue-500 rounded-full"></div>
             </div>
@@ -60,20 +64,21 @@
                 },
                 body: JSON.stringify({
                     level: '{{ $level }}',
-                    answer: answer
+                    answer: answer,
+                    question_id: {{ $question['id'] }}
                 })
             })
             .then(response => response.json())
             .then(data => {
                 if (data.status === 'success') {
-                    showResult(true, data.message, data.points);
+                    showResult(true, data.message, data.points, data.hasNext);
                 } else {
-                    showResult(false, data.message, data.points);
+                    showResult(false, data.message, data.points, data.hasNext);
                 }
             });
         }
         
-        function showResult(isCorrect, message, points) {
+        function showResult(isCorrect, message, points, hasNext) {
             // Create result modal
             const modal = document.createElement('div');
             modal.className = `fixed inset-0 flex items-center justify-center bg-black bg-opacity-50`;
@@ -83,18 +88,24 @@
                         <img src="${isCorrect ? '/asset/CheckBox.png' : '/asset/FalseBox.png'}" class="w-16 h-16 mx-auto">
                     </div>
                     <h3 class="text-xl font-bold ${isCorrect ? 'text-green-600' : 'text-red-600'}">${message}</h3>
-                    <p class="mt-2">Poin: ${points > 0 ? '+' : ''}${points}</p>
-                    <div class="mt-6 flex justify-center space-x-4">
-                        <a href="{{ route('home') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Kembali</a>
-                        <button onclick="nextQuestion()" class="px-4 py-2 bg-blue-500 text-white rounded">Selanjutnya</button>
+                    <p class="mt-2">Poin: ${points >= 0 ? '+' + points : points}</p>
+                    <div class="mt-6 flex justify-center">
+                        ${hasNext ? 
+                            `<button onclick="nextQuestion()" class="px-4 py-2 bg-blue-500 text-white rounded">Selanjutnya</button>` : 
+                            `<button onclick="showResults()" class="px-4 py-2 bg-blue-500 text-white rounded">Lihat Hasil</button>`
+                        }
                     </div>
                 </div>
             `;
             document.body.appendChild(modal);
         }
         
+        function showResults() {
+            window.location.href = '{{ route('games.show', ['level' => $level]) }}';
+        }
+        
         function nextQuestion() {
-            location.reload();
+            window.location.href = '{{ route('games.show', ['level' => $level]) }}';
         }
     </script>
 </x-layout_landingPage>

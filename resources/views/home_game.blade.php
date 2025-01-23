@@ -1,38 +1,34 @@
 <x-layout_landingPage>
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8">Permainan</h1>
-        
-        @if(session('error'))
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <div class="grid grid-cols-2 gap-6">
-            @foreach($games as $game)
-            <div class="relative block p-6 bg-white rounded-lg shadow {{ isset($game['is_unlocked']) && !$game['is_unlocked'] ? 'opacity-75' : '' }}">
-                <div class="flex items-center mb-4">
-                    <img src="{{ asset('asset/' . $game['icon']) }}" class="w-16 h-16">
-                    <div class="ml-4">
-                        <h2 class="text-xl font-bold">{{ $game['title'] }}</h2>
-                        <p class="text-gray-600">{{ $game['subtitle'] }}</p>
-                        @if(isset($game['is_unlocked']) && !$game['is_unlocked'])
-                            <p class="text-red-500 mt-2">
-                                🔒 Perlu {{ $game['required_points'] }} poin
-                            </p>
-                        @endif
-                    </div>
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Video Container -->
+            <div class="max-w-xl mx-auto p-4">
+                <div style="width: 560px; height: 315px;" class="mx-auto">
+                    @if($tutorialVideo)
+                        <video 
+                            class="w-full h-full"
+                            controls
+                            preload="metadata">
+                            <source src="{{ asset('storage/' . $tutorialVideo->file_path) }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    @else
+                        <div class="w-full h-full flex items-center justify-center bg-gray-100">
+                            <p class="text-gray-500">Video tutorial belum tersedia</p>
+                        </div>
+                    @endif
                 </div>
-                @if(!isset($game['is_unlocked']) || $game['is_unlocked'])
-                    <div class="absolute bottom-4 right-4">
-                        <a href="{{ route('games.show', $game['id']) }}" 
-                           class="px-4 py-2 bg-blue-500 text-white rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300">
-                            Mulai Bermain
-                        </a>
-                    </div>
-                @endif
             </div>
-            @endforeach
+
+            <!-- Content below video -->
+            <div class="p-8 text-center">
+                <h1 class="text-3xl font-bold mb-6">Selamat Datang di Game Edukasi</h1>
+                <p class="text-gray-600 mb-8">Tonton video tutorial di atas untuk memahami cara bermain, lalu mulai petualanganmu!</p>
+                <a href="{{ route('games.index') }}" 
+                   class="inline-block px-8 py-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-lg font-semibold">
+                    Main Sekarang
+                </a>
+            </div>
         </div>
     </div>
 </x-layout_landingPage>

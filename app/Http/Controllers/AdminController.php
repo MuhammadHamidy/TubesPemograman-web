@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\QuestionOption;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Models\TutorialVideo;
 
 class AdminController extends Controller
 {
@@ -214,5 +215,62 @@ class AdminController extends Controller
             DB::rollBack();
             return back()->with('error', 'Error deleting question: ' . $e->getMessage());
         }
+    }
+
+    public function manageTutorialVideo()
+    {
+        $videos = TutorialVideo::orderBy('created_at', 'desc')->get();
+        return view('admin.tutorial_video', compact('videos'));
+    }
+
+    public function uploadTutorialVideo(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'video' => 'required|mimetypes:video/mp4,video/webm|max:100000' // 100MB max
+        ]);
+
+        // Deactivate all other videos if this one will be active
+        if ($request->has('is_active')) {
+            TutorialVideo::where('is_active', true)->update(['is_active' => false]);
+        }
+
+        $videoPath = $request->file('video')->store('tutorial-videos', 'public');
+
+        TutorialVideo::create([
+            'title' => $request->title,
+            'file_path' => $videoPath,
+            'is_active' => $request->has('is_active')
+        ]);
+
+        return redirect()->back()->with('success', 'Video tutorial berhasil diunggah!');
+    }
+
+    public function toggleTutorialVideo($id)
+    {
+        $video = TutorialVideo::findOrFail($id);
+        
+        // If we're activating this video, deactivate all others
+        if (!$video->is_active) {
+            TutorialVideo::where('is_active', true)->update(['is_active' => false]);
+        }
+        
+        $video->update(['is_active' => !$video->is_active]);
+        
+        return redirect()->back()->with('success', 'Status video berhasil diperbarui!');
+    }
+
+    public function deleteTutorialVideo($id)
+    {
+        $video = TutorialVideo::findOrFail($id);
+        
+        // Delete the file
+        if (Storage::disk('public')->exists($video->file_path)) {
+            Storage::disk('public')->delete($video->file_path);
+        }
+        
+        $video->delete();
+        
+        return redirect()->back()->with('success', 'Video tutorial berhasil dihapus!');
     }
 } 
