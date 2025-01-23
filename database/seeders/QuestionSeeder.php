@@ -5,9 +5,28 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Question;
 use App\Models\QuestionOption;
+use Illuminate\Support\Facades\File;
 
 class QuestionSeeder extends Seeder
 {
+    private function copyImage($imageName)
+    {
+        $sourcePath = database_path('seeders/images/' . $imageName);
+        $destinationPath = public_path('asset/' . $imageName);
+        
+        // Create the destination directory if it doesn't exist
+        if (!File::exists(public_path('asset'))) {
+            File::makeDirectory(public_path('asset'), 0755, true);
+        }
+        
+        // Copy the image if it exists in the source
+        if (File::exists($sourcePath)) {
+            File::copy($sourcePath, $destinationPath);
+        }
+        
+        return $imageName;
+    }
+
     public function run()
     {
         // Motorik-1 Question 1
@@ -23,25 +42,25 @@ class QuestionSeeder extends Seeder
             'question_id' => $question1->id,
             'type' => 'image',
             'value' => 'yellow',
-            'image' => 'Ballon_yellow.png'
+            'image' => $this->copyImage('Ballon_yellow.png')
         ]);
         QuestionOption::create([
             'question_id' => $question1->id,
             'type' => 'image',
             'value' => 'black',
-            'image' => 'Ballon_brown.png'
+            'image' => $this->copyImage('Ballon_brown.png')
         ]);
         QuestionOption::create([
             'question_id' => $question1->id,
             'type' => 'image',
             'value' => 'green',
-            'image' => 'Ballon_green.png'
+            'image' => $this->copyImage('Ballon_green.png')
         ]);
         QuestionOption::create([
             'question_id' => $question1->id,
             'type' => 'image',
             'value' => 'blue',
-            'image' => 'Ballon_blue.png'
+            'image' => $this->copyImage('Ballon_blue.png')
         ]);
 
         // Motorik-2 Question
@@ -117,25 +136,25 @@ class QuestionSeeder extends Seeder
             'question_id' => $question4->id,
             'type' => 'image',
             'value' => 'shape',
-            'image' => 'shape.png'
+            'image' => $this->copyImage('shape.png')
         ]);
         QuestionOption::create([
             'question_id' => $question4->id,
             'type' => 'image',
             'value' => 'ellipse',
-            'image' => 'ellipse.png'
+            'image' => $this->copyImage('ellipse.png')
         ]);
         QuestionOption::create([
             'question_id' => $question4->id,
             'type' => 'image',
             'value' => 'polygon',
-            'image' => 'polygon.png'
+            'image' => $this->copyImage('polygon.png')
         ]);
         QuestionOption::create([
             'question_id' => $question4->id,
             'type' => 'image',
             'value' => 'star',
-            'image' => 'star.png'
+            'image' => $this->copyImage('star.png')
         ]);
     }
 }
