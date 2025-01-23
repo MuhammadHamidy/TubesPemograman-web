@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Question;
+use App\Models\GameHistory;
 
 class GameController extends Controller
 {
@@ -112,6 +113,17 @@ class GameController extends Controller
             $initialPoints = session()->get('initial_points', $userPoints);
             $finalPoints = $user->points;
             $pointsChange = $finalPoints - $initialPoints;
+
+            // Record game history
+            GameHistory::create([
+                'user_id' => $user->id,
+                'level' => $level,
+                'correct_answers' => $correctAnswers,
+                'total_questions' => $totalQuestions,
+                'points_earned' => $pointsChange,
+                'points_before' => $initialPoints,
+                'points_after' => $finalPoints
+            ]);
 
             // Reset session data
             session()->forget(['answered_questions', 'current_level', 'correct_answers', 'initial_points']);

@@ -23,7 +23,12 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 Route::get('/games/{level}', [GameController::class, 'show'])->name('games.show');
 Route::post('/games/check-answer', [GameController::class, 'checkAnswer'])->name('games.checkAnswer');
-Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
+// Profile Routes
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 // Tahap Perbaikan
 Route::get('/manage', [QuestionController::class, 'index'])->name('parent.manage');
