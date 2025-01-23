@@ -1,5 +1,4 @@
 <x-layout_main>
-    <!-- Register Container -->
     <div class="w-full max-w-md">
         <div class="mt-5">
             @if ($errors->any())
@@ -45,49 +44,35 @@
         </div>
 
         <!-- Title -->
-        <h1 class="text-4xl font-bold text-center mb-2">Daftar</h1>
-        <p class="text-center text-gray-600 mb-8">Buat akun KiQualls baru</p>
+        <h1 class="text-4xl font-bold text-center mb-2">Masuk</h1>
+        <p class="text-center text-gray-600 mb-8">Selamat datang di KiQualls</p>
 
-        <!-- Register Form -->
+        <!-- Login Form -->
         <div class="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg">
-            <form method="POST" action="{{ route('signup.post') }}" class="space-y-6">
+            <form method="POST" action="{{ route('signin.post') }}" class="space-y-6">
                 @csrf
-                <!-- Name Field -->
+                
+                <!-- Username Field -->
                 <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Nama Lengkap</label>
-                    <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Nama Ibu Kandung</label>
-                    <input type="text" name="mother_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-
-                <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Usia</label>
-                    <input type="number" name="age" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Nama Pengguna</label>
+                    <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Silakan masukkan username Anda" required>
                 </div>
 
                 <!-- Password Field -->
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Kata Sandi</label>
-                    <input type="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="password" name="password" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Silakan masukkan kata sandi Anda" required>
                 </div>
 
-                <!-- Confirm Password Field -->
-                <div>
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Konfirmasi Kata Sandi</label>
-                    <input type="password" name="password_confirmation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-
-                <!-- Register Button -->
+                <!-- Login Button -->
                 <button type="submit" class="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition-colors">
-                    Daftar
+                    Login
                 </button>
 
-                <!-- Login Link -->
+                <!-- Register Link -->
                 <div class="text-center text-sm">
-                    <span class="text-gray-600">Sudah punya akun? </span>
-                    <a href="{{ route('signin') }}" class="text-blue-500 hover:text-blue-600">Masuk disini</a>
+                    <span class="text-gray-600">Belum punya akun? </span>
+                    <a href="{{ route('signup') }}" class="text-blue-500 hover:text-blue-600">Daftar disini</a>
                 </div>
             </form>
         </div>

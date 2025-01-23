@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\ParentChildRelationship;
 
 class AuthController extends Controller
 {
@@ -26,18 +25,16 @@ class AuthController extends Controller
     public function signinPost(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
+            'name' => 'required',
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if(Auth::attempt($credentials)){
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended(route('home'));
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return redirect()->route('signin')->with("error","Login gagal. Periksa kembali kredensial Anda.");
     }
 
     // Handle Signup POST Request
@@ -45,37 +42,25 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
             'mother_name' => 'required|string|max:255',
             'age' => 'required|integer|max:255',
-            'parent_password' => 'required|string|min:6'
+            'password' => 'required|string|min:4|confirmed',
         ]);
 
-        // Buat akun anak
-        $child = User::create([
-            'name' => $request->name,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'mother_name' => $request->mother_name,
-            'role' => 'child'
-        ]);
+        $data['name'] =  $request->name;
+        $data['mother_name'] =  $request->mother_name;
+        $data['age'] =  $request->age;
+        $data['password'] =  Hash::make($request->password);
+        $data['role'] = 'user'; // Set default role to 'user'
+        $data['points'] = 0; // Initialize points to 0
 
-        // Buat akun orang tua
-        $parent = User::create([
-            'name' => $request->mother_name,
-            'username' => 'parent_' . $request->username,
-            'password' => Hash::make($request->parent_password),
-            'role' => 'parent'
-        ]);
+        $user = User::create($data);
 
-        // Buat relasi parent-child
-        ParentChildRelationship::create([
-            'parent_id' => $parent->id,
-            'child_id' => $child->id
-        ]);
+        if(!$user){
+            return redirect()->route('signup')->with("error","Registrasi gagal. Silakan coba lagi.");
+        }
 
-        return redirect()->route('signin')->with('success', 'Registrasi berhasil! Silakan login.');
+        return redirect(route('signin'))->with('success', 'Registrasi berhasil. Silakan login.');
     }
 
     // Handle Logout Request

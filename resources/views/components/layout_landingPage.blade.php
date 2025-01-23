@@ -20,9 +20,7 @@
         <nav class="bg-blue-300 p-4 shadow">
             <div class="container mx-auto flex items-center">
                 <div class="flex items-center">
-                    <img src="{{ Auth::check() && Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('img/avatar.png') }}" 
-                        alt="Profile Picture" 
-                        class="w-12 h-12 rounded-full object-cover">
+                    <img src="{{ asset('img/avatar.png') }}" class="w-12 h-12 rounded-full">
                     <div class="ml-4">
                         <p class="text-xl">Selamat Datang,</p>
                         <p class="text-2xl font-bold">{{ auth()->user()->name ?? 'Tamu' }}</p>
@@ -54,7 +52,4 @@
         </main>
     </div>
 </body>
-@stack('scripts')
 </html>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>

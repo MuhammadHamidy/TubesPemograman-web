@@ -39,11 +39,11 @@
                             </svg>
                         </button>
                         <!-- Dropdown Menu -->
-                        <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full sm:w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                        <div id="dropdownMenu" class="hidden absolute left-0 mt-2 w-full sm:w-48 bg-blueSky rounded-md shadow-lg py-1 z-10">
                             <a href="{{ route('signin') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white transition-colors">
                                 Sebagai Anak
                             </a>
-                            <a href="{{ route('parent.signin') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white transition-colors">
+                            <a href="{{ route('signin') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white transition-colors">
                                 Sebagai Orang Tua
                             </a>
                         </div>
