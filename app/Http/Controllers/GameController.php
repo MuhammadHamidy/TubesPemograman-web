@@ -86,14 +86,27 @@ class GameController extends Controller
                 ->with('error', 'Kamu perlu ' . $this->pointsRequirements[$level] . ' poin untuk membuka level ini!');
         }
 
+        // Check if we're starting a new level (no answered questions or different level)
+        $currentLevel = session()->get('current_level');
+        if ($currentLevel !== $level) {
+            session()->forget('answered_questions');
+            session()->put('current_level', $level);
+        }
+
+        // Get answered questions from session
+        $answeredQuestions = session()->get('answered_questions', []);
+        
         $question = Question::where('level', $level)
-            ->inRandomOrder()
+            ->whereNotIn('id', $answeredQuestions)
+            ->orderBy('id', 'asc')  // Get questions in sequential order
             ->with('options')
             ->first();
 
         if (!$question) {
+            // Reset answered questions and current level when level is completed
+            session()->forget(['answered_questions', 'current_level']);
             return redirect()->route('games.index')
-                ->with('error', 'Level tidak ditemukan!');
+                ->with('success', 'Selamat! Kamu telah menyelesaikan semua pertanyaan di level ini!');
         }
 
         $questionData = [
@@ -110,7 +123,16 @@ class GameController extends Controller
             })->toArray()
         ];
 
-        return view('game', ['question' => $questionData, 'level' => $level]);
+        // Get total questions and current question number
+        $totalQuestions = Question::where('level', $level)->count();
+        $currentQuestionNumber = count($answeredQuestions) + 1;
+
+        return view('game', [
+            'question' => $questionData, 
+            'level' => $level,
+            'currentQuestion' => $currentQuestionNumber,
+            'totalQuestions' => $totalQuestions
+        ]);
     }
 
     public function checkAnswer(Request $request)
@@ -118,13 +140,23 @@ class GameController extends Controller
         $user = Auth::user();
         $isCorrect = $this->validateAnswer($request->level, $request->answer, $request->question_id);
         
+        // Check if there are any remaining questions
+        $answeredQuestions = session()->get('answered_questions', []);
+        $answeredQuestions[] = $request->question_id;
+        session()->put('answered_questions', $answeredQuestions);
+        
+        $remainingQuestions = Question::where('level', $request->level)
+            ->whereNotIn('id', $answeredQuestions)
+            ->exists();
+        
         if ($isCorrect) {
             $points = 100;
             $user->increment('points', $points);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Selamat jawaban Kamu benar..',
-                'points' => $points
+                'points' => $points,
+                'hasNext' => $remainingQuestions
             ]);
         }
 
@@ -135,7 +167,8 @@ class GameController extends Controller
         return response()->json([
             'status' => 'error',
             'message' => 'Sayang Sekali jawaban Kamu Salah..',
-            'points' => $newPoints - $user->points
+            'points' => $newPoints - $user->points,
+            'hasNext' => $remainingQuestions
         ]);
     }
 }
