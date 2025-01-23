@@ -36,7 +36,7 @@ class GameController extends Controller
                 'icon' => 'Motorik1.png',
                 'required_points' => $this->pointsRequirements['motorik-1'],
                 'is_unlocked' => true,
-                'question_count' => $questionCounts['motorik-1']
+                'question_count' => $questionCounts['motorik-1'] ?? 0
             ],
             [
                 'id' => 'motorik-2',
@@ -45,7 +45,7 @@ class GameController extends Controller
                 'icon' => 'Motorik2.png',
                 'required_points' => $this->pointsRequirements['motorik-2'],
                 'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-2'],
-                'question_count' => $questionCounts['motorik-2']
+                'question_count' => $questionCounts['motorik-2'] ?? 0
             ],
             [
                 'id' => 'motorik-3',
@@ -54,7 +54,7 @@ class GameController extends Controller
                 'icon' => 'Motorik3.png',
                 'required_points' => $this->pointsRequirements['motorik-3'],
                 'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-3'],
-                'question_count' => $questionCounts['motorik-3']
+                'question_count' => $questionCounts['motorik-3'] ?? 0
             ],
             [
                 'id' => 'motorik-4',
@@ -63,11 +63,11 @@ class GameController extends Controller
                 'icon' => 'Motorik4.png',
                 'required_points' => $this->pointsRequirements['motorik-4'],
                 'is_unlocked' => $userPoints >= $this->pointsRequirements['motorik-4'],
-                'question_count' => $questionCounts['motorik-4']
+                'question_count' => $questionCounts['motorik-4'] ?? 0
             ],
         ];
         
-        return view('home_game', compact('games'));
+        return view('games.index', compact('games'));
     }
 
     private function validateAnswer($level, $answer, $questionId)

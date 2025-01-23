@@ -40,6 +40,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\AdminController::class, 'dashboard'])->name('admin.dashboard');
     Route::post('/logout', [App\Http\Controllers\AdminController::class, 'logout'])->name('admin.logout');
 
+    // Tutorial Video Management
+    Route::get('/tutorial-video', [App\Http\Controllers\AdminController::class, 'manageTutorialVideo'])->name('admin.tutorial-video');
+    Route::post('/tutorial-video', [App\Http\Controllers\AdminController::class, 'uploadTutorialVideo'])->name('admin.tutorial-video.upload');
+    Route::put('/tutorial-video/{id}/toggle', [App\Http\Controllers\AdminController::class, 'toggleTutorialVideo'])->name('admin.tutorial-video.toggle');
+    Route::delete('/tutorial-video/{id}', [App\Http\Controllers\AdminController::class, 'deleteTutorialVideo'])->name('admin.tutorial-video.delete');
+
     // Questions Management Routes
     Route::get('/questions/create', [App\Http\Controllers\AdminController::class, 'createQuestion'])->name('admin.questions.create');
     Route::post('/questions', [App\Http\Controllers\AdminController::class, 'storeQuestion'])->name('admin.questions.store');
