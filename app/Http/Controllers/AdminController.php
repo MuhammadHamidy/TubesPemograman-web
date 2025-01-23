@@ -217,60 +217,69 @@ class AdminController extends Controller
         }
     }
 
-    public function manageTutorialVideo()
+    public function tutorialVideo()
     {
-        $videos = TutorialVideo::orderBy('created_at', 'desc')->get();
+        $videos = TutorialVideo::all();
         return view('admin.tutorial_video', compact('videos'));
     }
 
-    public function uploadTutorialVideo(Request $request)
+    public function storeTutorialVideo(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'video' => 'required|mimetypes:video/mp4,video/webm|max:100000' // 100MB max
+            'video' => 'required|file|mimes:mp4,mov,avi|max:102400'
         ]);
 
-        // Deactivate all other videos if this one will be active
-        if ($request->has('is_active')) {
-            TutorialVideo::where('is_active', true)->update(['is_active' => false]);
-        }
-
-        $videoPath = $request->file('video')->store('tutorial-videos', 'public');
+        $path = $request->file('video')->store('tutorial-videos', 'public');
 
         TutorialVideo::create([
             'title' => $request->title,
-            'file_path' => $videoPath,
-            'is_active' => $request->has('is_active')
+            'file_path' => $path,
+            'is_active' => false
         ]);
 
-        return redirect()->back()->with('success', 'Video tutorial berhasil diunggah!');
+        return redirect()->back()->with('success', 'Video tutorial berhasil diunggah.');
     }
 
-    public function toggleTutorialVideo($id)
+    public function updateTutorialVideo(Request $request, $id)
     {
         $video = TutorialVideo::findOrFail($id);
         
-        // If we're activating this video, deactivate all others
-        if (!$video->is_active) {
-            TutorialVideo::where('is_active', true)->update(['is_active' => false]);
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'video' => 'nullable|file|mimes:mp4,mov,avi|max:102400'
+        ]);
+
+        if ($request->hasFile('video')) {
+            Storage::disk('public')->delete($video->file_path);
+            $path = $request->file('video')->store('tutorial-videos', 'public');
+            $video->file_path = $path;
         }
-        
-        $video->update(['is_active' => !$video->is_active]);
-        
-        return redirect()->back()->with('success', 'Status video berhasil diperbarui!');
+
+        $video->title = $request->title;
+        $video->save();
+
+        return redirect()->back()->with('success', 'Video tutorial berhasil diperbarui.');
     }
 
     public function deleteTutorialVideo($id)
     {
         $video = TutorialVideo::findOrFail($id);
-        
-        // Delete the file
-        if (Storage::disk('public')->exists($video->file_path)) {
-            Storage::disk('public')->delete($video->file_path);
-        }
-        
+        Storage::disk('public')->delete($video->file_path);
         $video->delete();
+
+        return redirect()->back()->with('success', 'Video tutorial berhasil dihapus.');
+    }
+
+    public function activateTutorialVideo($id)
+    {
+        // Deactivate all videos first
+        TutorialVideo::query()->update(['is_active' => false]);
         
-        return redirect()->back()->with('success', 'Video tutorial berhasil dihapus!');
+        // Activate the selected video
+        $video = TutorialVideo::findOrFail($id);
+        $video->update(['is_active' => true]);
+
+        return redirect()->back()->with('success', 'Video tutorial berhasil diaktifkan.');
     }
 } 

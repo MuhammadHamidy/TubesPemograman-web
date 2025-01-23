@@ -41,7 +41,7 @@
         </div>
         <!-- Logo -->
         <div class="flex justify-center mb-2">
-            <img src="{{ asset('img/logo_kiquals.png') }}" alt="KiQualls Logo" class="w-32">
+            <img src="{{ asset('img/logo_kiqualls.png') }}" alt="KiQualls Logo" class="w-32">
         </div>
 
         <!-- Title -->
@@ -56,6 +56,11 @@
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Nama Lengkap</label>
                     <input type="text" name="name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Nama Pengguna</label>
+                    <input type="text" name="username" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <p class="text-gray-500 text-xs mt-1">Nama pengguna ini akan digunakan untuk login</p>
                 </div>
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Nama Ibu Kandung</label>
@@ -77,6 +82,14 @@
                 <div>
                     <label class="block text-gray-700 text-sm font-medium mb-2">Konfirmasi Kata Sandi</label>
                     <input type="password" name="password_confirmation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Password Orang Tua</label>
+                    <input type="password" name="parent_password" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           required>
+                    <p class="text-gray-500 text-xs mt-1">Password ini akan digunakan orang tua untuk login</p>
                 </div>
 
                 <!-- Register Button -->

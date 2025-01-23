@@ -1,32 +1,55 @@
-<x-layout_mainParent>
-    <div class="container mx-auto p-6">
-        <h1 class="text-xl font-bold mb-4">Kelola Soal</h1>
-        <a href="{{ route('parent.create') }}" class="px-4 py-2 bg-blue-500 text-white rounded">Tambah Soal</a>
+<x-layout_landingPage>
+    <div class="container mx-auto p-4">
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
+                <span class="block sm:inline">{{ session('success') }}</span>
+            </div>
+        @endif
 
-        <table class="mt-4 w-full">
-            <thead>
-                <tr>
-                    <th class="text-left">Level</th>
-                    <th class="text-left">Soal</th>
-                    <th class="text-left">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($questions as $question)
-                <tr>
-                    <td>{{ $question->level }}</td>
-                    <td>{{ $question->question }}</td>
-                    <td>
-                        <a href="{{ route('parent.edit', $question->id) }}" class="text-blue-500">Edit</a> |
-                        <form action="{{ route('parent.destroy', $question->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="text-red-500">Hapus</button>
-                        </form>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
+            <h1 class="text-2xl font-bold text-blue-900 mb-6">Data Anak</h1>
+
+            <!-- Form untuk menambah anak -->
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold mb-4">Hubungkan dengan Akun Anak</h2>
+                <form action="{{ route('parent.link-child') }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Email Anak</label>
+                        <input type="email" name="child_email" 
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                               placeholder="Masukkan email akun anak">
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                        Hubungkan
+                    </button>
+                </form>
+            </div>
+
+            <!-- Daftar anak yang terhubung -->
+            <div>
+                <h2 class="text-lg font-semibold mb-4">Daftar Anak</h2>
+                @if($children->isEmpty())
+                    <p class="text-gray-500">Belum ada anak yang terhubung</p>
+                @else
+                    <div class="space-y-4">
+                        @foreach($children as $child)
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold">{{ $child->name }}</h3>
+                                        <p class="text-gray-600 text-sm">{{ $child->email }}</p>
+                                    </div>
+                                    <a href="{{ route('parent.child-progress', $child->id) }}" 
+                                       class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                                        Lihat Progress
+                                    </a>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
     </div>
-</x-layout_mainParent>
+</x-layout_landingPage>
