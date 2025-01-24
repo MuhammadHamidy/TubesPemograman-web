@@ -24,7 +24,10 @@ class User extends Authenticatable
         'password',
         'role',
         'points',
-        'profile_picture'
+        'parent_email',
+        'parent_password',
+        'is_parent',
+        'parent_of'
     ];
 
     /**
@@ -50,23 +53,13 @@ class User extends Authenticatable
         ];
     }
 
-    public function parentRelationships()
+    public function child()
     {
-        return $this->hasMany(ParentChildRelationship::class, 'child_id');
+        return $this->belongsTo(User::class, 'parent_of');
     }
 
-    public function childRelationships()
+    public function parent()
     {
-        return $this->hasMany(ParentChildRelationship::class, 'parent_id');
-    }
-
-    public function children()
-    {
-        return $this->belongsToMany(User::class, 'parent_child_relationships', 'parent_id', 'child_id');
-    }
-
-    public function parents()
-    {
-        return $this->belongsToMany(User::class, 'parent_child_relationships', 'child_id', 'parent_id');
+        return $this->hasOne(User::class, 'parent_of');
     }
 }

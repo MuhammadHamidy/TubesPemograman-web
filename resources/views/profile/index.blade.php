@@ -16,39 +16,79 @@
             </div>
         @endif
 
-        <div class="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg max-w-2xl mx-auto">
-            <!-- Profile Display Section -->
-            <div class="flex flex-col items-center">
-                <h1 class="text-2xl font-bold text-blue-900 mb-6">Data Perkembangan Anak</h1>
-                
-                <!-- Profile Picture and Basic Info -->
-                <div class="relative mb-6">
-                    <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-200 border-4 border-blue-500">
-                        <img id="profileImage" src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('img/default-profile.png') }}" 
-                             alt="Profile Picture" 
-                             class="w-full h-full object-cover">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Profile Info Card -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg">
+                <div class="flex flex-col items-center">
+                    <h1 class="text-2xl font-bold text-blue-900 mb-6">Data Perkembangan Anak</h1>
+                    
+                    <!-- User Info Display -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-xl font-semibold">{{ $user->name ?? '-' }}</h2>
+                        <p class="text-gray-600">Nama Ibu: {{ $user->mother_name ?? '-' }}</p>
+                        <button id="editButton" class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors">
+                            Ubah Profil
+                        </button>
                     </div>
-                    <button type="button" id="editButton" class="absolute bottom-0 right-0 bg-blue-500 rounded-full p-2 cursor-pointer hover:bg-blue-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-                        </svg>
-                    </button>
-                </div>
 
-                <!-- User Info Display -->
-                <div class="text-center mb-8">
-                    <h2 class="text-xl font-semibold">{{ $user->name }}</h2>
-                    <p class="text-gray-600">Nama Ibu: {{ $user->mother_name }}</p>
-                </div>
-
-                <!-- Progress Chart -->
-                <div class="w-full">
-                    <div class="text-center mb-4">
+                    <!-- Total Points Display -->
+                    <div class="w-full text-center mb-8">
                         <div class="text-4xl font-bold text-blue-600">{{ $user->points ?? 0 }}</div>
-                        <div class="text-gray-600">Total Points</div>
+                        <div class="text-gray-600">Total Poin</div>
                     </div>
-                    <div id="progressChart" style="min-width: 300px; height: 300px;" class="w-full"></div>
+
+                    <!-- Level Progress -->
+                    <div class="w-full">
+                        <h3 class="text-lg font-semibold mb-4">Kemajuan Level</h3>
+                        <div id="levelProgressChart" class="w-full h-64"></div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Game Performance Card -->
+            <div class="bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg">
+                <h2 class="text-2xl font-bold text-blue-900 mb-6">Performa Permainan</h2>
+                
+                <!-- Success Rate Chart -->
+                <div class="mb-8">
+                    <h3 class="text-lg font-semibold mb-4">Tingkat Keberhasilan per Game</h3>
+                    <div id="successRateChart" class="w-full h-64"></div>
+                </div>
+
+                <!-- Points History Chart -->
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Riwayat Poin</h3>
+                    <div id="pointsHistoryChart" class="w-full h-64"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Games History -->
+        <div class="mt-6 bg-white/80 backdrop-blur-sm rounded-xl p-8 shadow-lg">
+            <h2 class="text-2xl font-bold text-blue-900 mb-6">Riwayat Permainan Terakhir</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="px-4 py-2">Permainan</th>
+                            <th class="px-4 py-2">Skor</th>
+                            <th class="px-4 py-2">Poin Diperoleh</th>
+                            <th class="px-4 py-2">Tanggal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($gameHistory as $game)
+                        <tr class="border-b">
+                            <td class="px-4 py-2">{{ ucfirst(str_replace('-', ' ', $game->level)) }}</td>
+                            <td class="px-4 py-2">{{ $game->correct_answers }}/{{ $game->total_questions }}</td>
+                            <td class="px-4 py-2 {{ $game->points_earned >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                {{ $game->points_earned >= 0 ? '+' : '' }}{{ $game->points_earned }}
+                            </td>
+                            <td class="px-4 py-2">{{ $game->created_at->format('d M Y H:i') }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -58,7 +98,7 @@
         <div class="flex items-center justify-center min-h-screen p-4">
             <div class="bg-white rounded-lg max-w-md w-full p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold">Edit Profile</h3>
+                    <h3 class="text-lg font-bold">Ubah Profil</h3>
                     <button type="button" onclick="closeEditModal()" class="text-gray-500 hover:text-gray-700">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -69,12 +109,6 @@
                 <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" id="profileForm">
                     @csrf
                     
-                    <!-- Profile Picture Upload -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-medium mb-2">Foto Profile</label>
-                        <input type="file" id="profile_picture" name="profile_picture" class="w-full" accept="image/*">
-                    </div>
-
                     <!-- Name Field -->
                     <div class="mb-4">
                         <label class="block text-gray-700 text-sm font-medium mb-2">Nama</label>
@@ -86,7 +120,7 @@
                     <!-- Mother's Name Field -->
                     <div class="mb-6">
                         <label class="block text-gray-700 text-sm font-medium mb-2">Nama Ibu</label>
-                        <input type="text" name="mother_name" value="{{ old('mother_name', $user->mother_name) }}" 
+                        <input type="text" name="mother_name" value="{{ old('mother_name', $user->mother_name ?? '') }}" 
                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                required>
                     </div>
@@ -103,14 +137,12 @@
     @push('scripts')
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
-        // Tunggu sampai DOM selesai dimuat
         document.addEventListener('DOMContentLoaded', function() {
-            // Modal elements
+            // Modal functionality
             const editButton = document.getElementById('editButton');
             const modal = document.getElementById('editProfileModal');
             const closeButton = document.querySelector('[onclick="closeEditModal()"]');
 
-            // Modal functions
             function openEditModal() {
                 if (modal) {
                     modal.classList.remove('hidden');
@@ -123,7 +155,6 @@
                 }
             }
 
-            // Add event listeners
             if (editButton) {
                 editButton.addEventListener('click', openEditModal);
             }
@@ -133,26 +164,11 @@
                 closeButton.addEventListener('click', closeEditModal);
             }
 
-            // Close modal when clicking outside
             window.addEventListener('click', function(event) {
                 if (event.target === modal) {
                     closeEditModal();
                 }
             });
-
-            // Preview profile picture before upload
-            const profilePictureInput = document.getElementById('profile_picture');
-            if (profilePictureInput) {
-                profilePictureInput.addEventListener('change', function(e) {
-                    if (e.target.files && e.target.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            document.getElementById('profileImage').src = e.target.result;
-                        }
-                        reader.readAsDataURL(e.target.files[0]);
-                    }
-                });
-            }
 
             // Form submission handling
             const profileForm = document.getElementById('profileForm');
@@ -173,7 +189,7 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            window.location.reload();
+                            window.location.href = "{{ route('profile') }}";
                         } else {
                             return response.json().then(data => {
                                 throw new Error(data.message || 'Terjadi kesalahan');
@@ -187,82 +203,145 @@
                 });
             }
 
-            // Initialize progress chart dengan konfigurasi yang lebih lengkap
-            const chartOptions = {
-                chart: {
-                    type: 'pie',
-                    backgroundColor: 'transparent',
-                    renderTo: 'progressChart',
-                    height: 300
-                },
-                title: {
-                    text: 'Progress Belajar'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-                        }
-                    }
-                },
-                series: [{
-                    name: 'Progress',
-                    colorByPoint: true,
-                    data: [
-                        {
-                            name: 'Motorik I',
-                            y: {{ $user->points >= 300 ? 25 : ($user->points / 300 * 25) }},
-                            color: '#4299E1' // blue-500
-                        },
-                        {
-                            name: 'Motorik II',
-                            y: {{ $user->points >= 600 ? 25 : (max(0, $user->points - 300) / 300 * 25) }},
-                            color: '#48BB78' // green-500
-                        },
-                        {
-                            name: 'Motorik III',
-                            y: {{ $user->points >= 900 ? 25 : (max(0, $user->points - 600) / 300 * 25) }},
-                            color: '#ECC94B' // yellow-500
-                        },
-                        {
-                            name: 'Motorik IV',
-                            y: {{ $user->points >= 1200 ? 25 : (max(0, $user->points - 900) / 300 * 25) }},
-                            color: '#ED8936' // orange-500
-                        }
-                    ]
-                }],
-                credits: {
-                    enabled: false
-                },
-                responsive: {
-                    rules: [{
-                        condition: {
-                            maxWidth: 500
-                        },
-                        chartOptions: {
-                            plotOptions: {
-                                pie: {
-                                    dataLabels: {
-                                        enabled: false
-                                    }
-                                }
-                            }
-                        }
-                    }]
-                }
-            };
+            // Debug data
+            console.log('Level Progress Data:', {!! json_encode($levelProgress) !!});
+            console.log('Success Rate Data:', {!! json_encode($successRateData) !!});
+            console.log('Points History Data:', {!! json_encode($pointsHistory) !!});
 
-            // Pastikan container sudah ada sebelum membuat chart
-            const container = document.getElementById('progressChart');
-            if (container) {
-                try {
-                    Highcharts.chart(chartOptions);
-                } catch (error) {
-                    console.error('Error creating chart:', error);
-                }
+            // Charts
+            try {
+                // Level Progress Chart
+                Highcharts.chart('levelProgressChart', {
+                    chart: {
+                        type: 'pie',
+                        backgroundColor: 'transparent',
+                        height: 300
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: 'Kemajuan Level',
+                        style: { fontSize: '16px' }
+                    },
+                    plotOptions: {
+                        pie: {
+                            allowPointSelect: true,
+                            cursor: 'pointer',
+                            dataLabels: {
+                                enabled: true,
+                                format: '<b>{point.name}</b>: {point.percentage:.1f}%',
+                                style: {
+                                    fontSize: '12px'
+                                }
+                            },
+                            showInLegend: true,
+                            size: '100%'
+                        }
+                    },
+                    tooltip: {
+                        pointFormat: 'Kemajuan: <b>{point.percentage:.1f}%</b>'
+                    },
+                    series: [{
+                        name: 'Kemajuan',
+                        colorByPoint: true,
+                        data: {!! json_encode($levelProgress) !!}
+                    }]
+                });
+
+                // Success Rate Chart
+                Highcharts.chart('successRateChart', {
+                    chart: {
+                        type: 'column',
+                        backgroundColor: 'transparent',
+                        height: 300
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: 'Tingkat Keberhasilan per Game',
+                        style: { fontSize: '16px' }
+                    },
+                    xAxis: {
+                        categories: {!! json_encode($successRateData['categories']) !!},
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: 100,
+                        title: {
+                            text: 'Tingkat Keberhasilan (%)'
+                        }
+                    },
+                    tooltip: {
+                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                        pointFormat: '<tr><td style="color:{series.color};padding:0">Keberhasilan: </td>' +
+                            '<td style="padding:0"><b>{point.y:.1f}%</b></td></tr>',
+                        footerFormat: '</table>',
+                        shared: true,
+                        useHTML: true
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0,
+                            colorByPoint: true,
+                            colors: ['#4299E1', '#48BB78', '#ECC94B', '#ED8936']
+                        }
+                    },
+                    series: [{
+                        name: 'Tingkat Keberhasilan',
+                        data: {!! json_encode($successRateData['data']) !!}
+                    }]
+                });
+
+                // Points History Chart
+                Highcharts.chart('pointsHistoryChart', {
+                    chart: {
+                        type: 'line',
+                        backgroundColor: 'transparent',
+                        height: 300
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    title: {
+                        text: 'Riwayat Poin',
+                        style: { fontSize: '16px' }
+                    },
+                    xAxis: {
+                        categories: {!! json_encode($pointsHistory['dates']) !!},
+                        labels: {
+                            rotation: -45
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Total Poin'
+                        },
+                        min: 0
+                    },
+                    tooltip: {
+                        formatter: function() {
+                            return '<b>' + this.x + '</b><br/>Poin: ' + this.y;
+                        }
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: true
+                            },
+                            color: '#4299E1'
+                        }
+                    },
+                    series: [{
+                        name: 'Poin',
+                        data: {!! json_encode($pointsHistory['points']) !!}
+                    }]
+                });
+            } catch (error) {
+                console.error('Error creating charts:', error);
             }
         });
     </script>
