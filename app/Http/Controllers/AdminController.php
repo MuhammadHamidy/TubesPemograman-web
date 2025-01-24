@@ -93,14 +93,14 @@ class AdminController extends Controller
             ]);
 
             // Create options
-            foreach ($validated['options'] as $optionData) {
+            foreach ($validated['options'] as $index => $optionData) {
                 $option = new QuestionOption([
                     'type' => $optionData['type'],
                     'value' => $optionData['value']
                 ]);
 
-                if (isset($optionData['image']) && $request->hasFile("options.{$loop->index}.image")) {
-                    $path = $request->file("options.{$loop->index}.image")->store('options', 'public');
+                if (isset($optionData['image']) && $request->hasFile("options.{$index}.image")) {
+                    $path = $request->file("options.{$index}.image")->store('options', 'public');
                     $option->image = $path;
                 }
 
